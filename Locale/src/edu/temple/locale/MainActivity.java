@@ -105,6 +105,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	public void onConnected(Bundle arg0) {
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		LocationRequest locationRequest = LocationRequest.create();
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		mLocationClient.requestLocationUpdates(locationRequest, this);
 	}
 
