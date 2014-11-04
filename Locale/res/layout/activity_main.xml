@@ -10,16 +10,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="123dp"
-        android:text="TextView"
+        android:layout_marginTop="80dp"
+        android:text="GPS Data"
         android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/viewOnMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Button" />
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/gpsData"
+        android:layout_marginTop="40dp"
+        tools:layout="@layout/test_map" />
 
 </RelativeLayout>

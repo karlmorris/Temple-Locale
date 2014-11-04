@@ -5,15 +5,16 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +30,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 	LocationClient mLocationClient;
-
+	
+	MapFragment map;
 
 	TextView gpsData;
-
-	Button viewOnMap;
 
 	double lat = 0, lon = 0, speed = 0;
 
@@ -44,30 +44,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 
 
 		gpsData = (TextView) findViewById(R.id.gpsData);
-		viewOnMap = (Button) findViewById(R.id.viewOnMap);
 
-
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
+		
 		/*
 		 * Create a new location client, using the enclosing class to
 		 * handle callbacks.
 		 */
 		mLocationClient = new LocationClient(this, this, this);
-
-		viewOnMap.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String url = "http://maps.google.com/maps?z=12&t=m&q=loc:" + lat + "+" + lon;
-
-
-				Intent viewMapIntent = new Intent(Intent.ACTION_VIEW);
-
-				viewMapIntent.setData(Uri.parse(url));
-
-				startActivity(viewMapIntent);
-
-			}
-		});
 
 	}
 
@@ -99,12 +83,23 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				+ "Speed: " + speed;
 
 		gpsData.setText(message);
+		
+		LatLng ll = new LatLng(lat, lon);
+		
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, 15);
+		map.getMap().animateCamera(cameraUpdate);
+		MarkerOptions currentLocationMarker = new MarkerOptions();
+		currentLocationMarker.position(ll);
+		currentLocationMarker.title("You are here");
+		map.getMap().addMarker(currentLocationMarker);
+
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		LocationRequest locationRequest = LocationRequest.create();
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		mLocationClient.requestLocationUpdates(locationRequest, this);
 	}
 
